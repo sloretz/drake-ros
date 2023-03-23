@@ -41,6 +41,71 @@ ros_cc_binary(
     ],
 )
 
+ament_index_share_files(
+    name = "xxx_foo_share",
+    package_name = "foo",
+    srcs = [":foo.txt"],
+    strip_prefix = "examples/hydroelastic/",
+)
+
+ament_index_share_files(
+    name = "xxx_foo_again_share",
+    package_name = "foo",  # Same package name as before
+    srcs = [":foo_again.txt"],
+    strip_prefix = "examples/hydroelastic/",
+)
+
+ament_index_share_files(
+    name = "xxx_foo_new_prefix_share",
+    package_name = "foo",  # Same package name as before
+    srcs = [":foo_again.txt"],
+    prefix = "unique_index",
+    strip_prefix = "examples/hydroelastic/",
+)
+
+ament_index_share_files(
+    name = "xxx_bar_share",
+    package_name = "bar",
+    srcs = [":bar.txt"],
+    strip_prefix = "examples/hydroelastic/",
+)
+
+ros_cc_binary(
+    name = "xxx_dep_two_packages",
+    srcs = ["xxx_dep_two_packages.cc"],
+    data = [
+        ":xxx_foo_share",
+        ":xxx_bar_share",
+    ],
+    deps = [
+        "@ros2//:ament_index_cpp_cc",
+    ]
+)
+
+ros_cc_binary(
+    name = "xxx_same_package_twice",
+    srcs = ["xxx_same_package_twice.cc"],
+    data = [
+        ":xxx_foo_share",
+        ":xxx_foo_again_share",
+    ],
+    deps = [
+        "@ros2//:ament_index_cpp_cc",
+    ]
+)
+
+ros_cc_binary(
+    name = "xxx_same_package_twice_unique_prefix",
+    srcs = ["xxx_same_package_twice.cc"],
+    data = [
+        ":xxx_foo_share",
+        ":xxx_foo_new_prefix_share",
+    ],
+    deps = [
+        "@ros2//:ament_index_cpp_cc",
+    ]
+)
+
 # TODO(sloretz) Add Python example
 
 ros_py_test(
